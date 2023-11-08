@@ -33,14 +33,10 @@ ar() {
 	printf "\n"${vw}"/100" >> "${text}"/"${basename}".txt
 	printf "\n${vw}" >> "${text}"/"${basename}".txt
 }
-# ImageMagick temp cache location
-#~ export MAGICK_TMPDIR=/home/dux/.cache/protocms
-# clean previous cache
-#~ rm -rf ${HOME}/.cache/protocms/*
 
 #====================================================		IMAGE CONVERTER
 
-# get absolute paths of /images/ and make readarray/mapfile with it
+# get absolute paths of /images/ and make mapfile with it
 mapfile -d $'\0' locations < <(find ~+ -type d -print0)
 echo
 echo -e "\e[00;34mDONE\e[0m" "\e[01;34mimage preparation\e[0m"
@@ -114,8 +110,6 @@ for location in "${locations[@]}"; do
 		fi
 	done
 done
-# clean cache
-#~ rm -rf ${HOME}/.cache/protocms/*
 
 #====================================================		GLOBAL FUNCTIONS
 
@@ -175,25 +169,24 @@ for filename in ${txt}; do
 
 	id=$(sed -n '1p' "${filename}")
 	alt=$(sed -n '2p' "${filename}")
-	#~ ar=$(sed -n '3p' "${filename}")
 	# put all lines after 2 line  in an array but exclude last line
 	mapfile -t -s 4 sizes < <(sed '$ d' "${filename}")
 	# last line of sizes
 	lastsize=$(tail -n1 "${filename}")
 
 	# PRINT
-	echo "$(tab 3)""<img id=\""${id}"\"" 												>> "${gen}"
-	echo "$(tab 4)""src=\"https://jaszewski.art""${sizes[0]}""\"" 			>> "${gen}"
-	echo "$(tab 4)""sizes=\"100vw\"" 													>> "${gen}"
-	echo "$(tab 4)""srcset=\"" 																>> "${gen}"
+	echo "$(tab 3)""<img id=\""${id}"\"" 								>> "${gen}"
+	echo "$(tab 4)""src=\"https://jaszewski.art""${sizes[0]}""\"" 		>> "${gen}"
+	echo "$(tab 4)""sizes=\"100vw\"" 									>> "${gen}"
+	echo "$(tab 4)""srcset=\"" 											>> "${gen}"
 	for size in "${sizes[@]}"; do
 		allsize
 		echo "$(tab 6)""https://jaszewski.art"${size}" "${width}"w," 	>> "${gen}"
 	done
 	lastsize
 	echo "$(tab 6)""https://jaszewski.art"${lastsize}" "${width}"w\"" 	>> "${gen}"
-	echo "$(tab 4)"alt="\"${alt}\" loading=\"lazy\">" 							>> "${gen}"
-	echo 																								>> "${gen}"
+	echo "$(tab 4)"alt="\"${alt}\" loading=\"lazy\">" 					>> "${gen}"
+	echo 																>> "${gen}"
 
 done
 
@@ -236,72 +229,72 @@ for filename in ${txt}; do
 	lastsize=$(tail -n1 "${filename}")
 
 	# PRINT SERIES HOME
-	echo "$(tab 5)""<div data-hash=\""${id}"\" class=\"swiper-slide no-select\">"		>> "${seho}"
-	echo "$(tab 6)""<a href=\"https://jaszewski.art/gallery#"${id}"\">"						>> "${seho}"
-	echo "$(tab 7)""<img src=\"https://jaszewski.art""${sizes[0]}""\"" 						>> "${seho}"
-	echo "$(tab 8)""sizes=\"100vw\"" 																			>> "${seho}"
+	echo "$(tab 5)""<div data-hash=\""${id}"\" class=\"swiper-slide no-select\">"									>> "${seho}"
+	echo "$(tab 6)""<a href=\"https://jaszewski.art/gallery#"${id}"\">"												>> "${seho}"
+	echo "$(tab 7)""<img src=\"https://jaszewski.art""${sizes[0]}""\"" 												>> "${seho}"
+	echo "$(tab 8)""sizes=\"100vw\"" 																				>> "${seho}"
 	echo "$(tab 8)""srcset=\"" 																						>> "${seho}"
-	for size in "${sizes[@]}"; do
-		allsize
-		echo "$(tab 10)""https://jaszewski.art"${size}" "${width}"w," 							>> "${seho}"
-	done
-	lastsize
-	echo "$(tab 10)""https://jaszewski.art"${lastsize}" "${width}"w\"" 						>> "${seho}"
-	echo "$(tab 8)"alt="\"${alt}\" loading=\"lazy\">" 													>> "${seho}"
-	echo "$(tab 7)""<div class=\"gradient-gallery-img\"></div>"								>> "${seho}"
-	echo "$(tab 7)""<p class=\"series-name no-select "${font}"\">"${title}"</p>"	>> "${seho}"
-	echo "$(tab 6)""</a>"																								>> "${seho}"
+	for size in "${sizes[@]}"; do							
+		allsize							
+		echo "$(tab 10)""https://jaszewski.art"${size}" "${width}"w," 												>> "${seho}"
+	done							
+	lastsize							
+	echo "$(tab 10)""https://jaszewski.art"${lastsize}" "${width}"w\"" 												>> "${seho}"
+	echo "$(tab 8)"alt="\"${alt}\" loading=\"lazy\">" 																>> "${seho}"
+	echo "$(tab 7)""<div class=\"gradient-gallery-img\"></div>"														>> "${seho}"
+	echo "$(tab 7)""<p class=\"series-name no-select "${font}"\">"${title}"</p>"									>> "${seho}"
+	echo "$(tab 6)""</a>"																							>> "${seho}"
 	echo "$(tab 5)""</div>"																							>> "${seho}"
-	echo 																														>> "${seho}"
+	echo 																											>> "${seho}"
 
-	# PRINT SERIES GALLERY
-	echo "$(tab 1)""<!--""$(spacer 40)""$titlecure""$(spacer 40)""-->"						>> "${gall}"
-	echo 																														>> "${gall}"
-	echo "$(tab 2)""<div class=\"scroll-snap\">"															>> "${gall}"
-	echo "$(tab 3)""<div class=\"swiper hSwiper\">"													>> "${gall}"
-	echo "$(tab 4)""<div class=\"swiper-wrapper\">"													>> "${gall}"
-	echo 																														>> "${gall}"
-	echo "$(tab 5)""<div id=\""${id}"\" class=\"swiper-slide "${bgcol}"\">"				>> "${gall}"
-	echo "$(tab 6)""<h2 class=\"series-name "${font}"\">"${title}"</h2>"				>> "${gall}"
-	echo "$(tab 6)""<div class=\"overlay-button noswipe cursor-pointer\" onclick=\"toggOver(event)\"></div>"	>> "${gall}"
-	echo "$(tab 6)""<div class=\"overlay overlay-series noswipe overlay-hide\">"		>> "${gall}"
-	echo 																														>> "${gall}"
-	echo "$(tab 7)""<div class=\"white-background\"></div>"									>> "${gall}"
-	echo 																														>> "${gall}"
-	echo "$(tab 7)""<div class=\"text-box\">"																>> "${gall}"
-	echo "$(tab 8)""<h3 class=\"overlay-series-name\">"${h3}"</h3>"					>> "${gall}"
-	echo "$(tab 8)""<h4 class=\"description\">"${h4}"</h4>"									>> "${gall}"
+	# PRINT SERIES GALLERY							
+	echo "$(tab 1)""<!--""$(spacer 40)""$titlecure""$(spacer 40)""-->"												>> "${gall}"
+	echo 																											>> "${gall}"
+	echo "$(tab 2)""<div class=\"scroll-snap\">"																	>> "${gall}"
+	echo "$(tab 3)""<div class=\"swiper hSwiper\">"																	>> "${gall}"
+	echo "$(tab 4)""<div class=\"swiper-wrapper\">"																	>> "${gall}"
+	echo 																											>> "${gall}"
+	echo "$(tab 5)""<div id=\""${id}"\" class=\"swiper-slide "${bgcol}"\">"											>> "${gall}"
+	echo "$(tab 6)""<h2 class=\"series-name "${font}"\">"${title}"</h2>"											>> "${gall}"
+	echo "$(tab 6)""<div class=\"overlay-button noswipe cursor-pointer\" onclick=\"toggOver(event)\"></div>"		>> "${gall}"
+	echo "$(tab 6)""<div class=\"overlay overlay-series noswipe overlay-hide\">"									>> "${gall}"
+	echo 																											>> "${gall}"
+	echo "$(tab 7)""<div class=\"white-background\"></div>"															>> "${gall}"
+	echo 																											>> "${gall}"
+	echo "$(tab 7)""<div class=\"text-box\">"																		>> "${gall}"
+	echo "$(tab 8)""<h3 class=\"overlay-series-name\">"${h3}"</h3>"													>> "${gall}"
+	echo "$(tab 8)""<h4 class=\"description\">"${h4}"</h4>"															>> "${gall}"
 	echo "$(tab 7)""</div>"																							>> "${gall}"
-	echo 																														>> "${gall}"
-	# print series overlay
-	echo "$(tab 7)""<div class=\"image-box\">"															>> "${gall}"
-	echo "$(tab 8)""<img src=\"https://jaszewski.art""${oversizes[0]}""\""					>> "${gall}"
-	echo "$(tab 8)""sizes=\"100vw\"" 																			>> "${gall}"
+	echo 																											>> "${gall}"
+	# print series overlay							
+	echo "$(tab 7)""<div class=\"image-box\">"																		>> "${gall}"
+	echo "$(tab 8)""<img src=\"https://jaszewski.art""${oversizes[0]}""\""											>> "${gall}"
+	echo "$(tab 8)""sizes=\"100vw\"" 																				>> "${gall}"
 	echo "$(tab 8)""srcset=\"" 																						>> "${gall}"
-	for size in "${oversizes[@]}"; do
-		allsize
-		echo "$(tab 10)""https://jaszewski.art"${size}" "${width}"w," 							>> "${gall}"
-	done
-	overlastsize
-	echo "$(tab 10)""https://jaszewski.art"${overlastsize}" "${width}"w\"" 				>> "${gall}"
-	echo "$(tab 8)"alt="\"$overalt\" class=\"splash\" loading=\"lazy\">" 					>> "${gall}"
+	for size in "${oversizes[@]}"; do							
+		allsize							
+		echo "$(tab 10)""https://jaszewski.art"${size}" "${width}"w," 												>> "${gall}"
+	done							
+	overlastsize							
+	echo "$(tab 10)""https://jaszewski.art"${overlastsize}" "${width}"w\"" 											>> "${gall}"
+	echo "$(tab 8)"alt="\"$overalt\" class=\"splash\" loading=\"lazy\">" 											>> "${gall}"
 	echo "$(tab 7)""</div>"																							>> "${gall}"
-	echo 																														>> "${gall}"
-	# print series splash
+	echo 																											>> "${gall}"
+	# print series splash							
 	echo "$(tab 6)""</div>"																							>> "${gall}"
-	echo "$(tab 6)""<img src=\"https://jaszewski.art""${sizes[0]}""\"" 						>> "${gall}"
-	echo "$(tab 7)""sizes=\"100vw\"" 																			>> "${gall}"
+	echo "$(tab 6)""<img src=\"https://jaszewski.art""${sizes[0]}""\"" 												>> "${gall}"
+	echo "$(tab 7)""sizes=\"100vw\"" 																				>> "${gall}"
 	echo "$(tab 7)""srcset=\"" 																						>> "${gall}"
-	for size in "${sizes[@]}"; do
-		allsize
-		echo "$(tab 9)""https://jaszewski.art"${size}" "${width}"w," 							>> "${gall}"
-	done
-	lastsize
-	echo "$(tab 9)""https://jaszewski.art"${lastsize}" "${width}"w\"" 							>> "${gall}"
-	echo "$(tab 7)""alt="\"${alt}"\" class=\"splash\" loading=\"lazy\">" 						>> "${gall}"
-	echo "$(tab 6)""<div class=\"gradient\"></div>"													>> "${gall}"
+	for size in "${sizes[@]}"; do							
+		allsize							
+		echo "$(tab 9)""https://jaszewski.art"${size}" "${width}"w," 												>> "${gall}"
+	done							
+	lastsize							
+	echo "$(tab 9)""https://jaszewski.art"${lastsize}" "${width}"w\"" 												>> "${gall}"
+	echo "$(tab 7)""alt="\"${alt}"\" class=\"splash\" loading=\"lazy\">" 											>> "${gall}"
+	echo "$(tab 6)""<div class=\"gradient\"></div>"																	>> "${gall}"
 	echo "$(tab 5)""</div>"																							>> "${gall}"
-	echo 																														>> "${gall}"
+	echo 																											>> "${gall}"
 
 	# print works
 	for work in ${works}; do
@@ -319,47 +312,47 @@ for filename in ${txt}; do
 		war=$(sed -n '10p' "${work}")
 		wvw=$(sed -n '11p' "${work}")
 
-		echo "$(tab 5)""<div id=\""${wid}"\" class=\"swiper-slide "${wbgcol}"\">"				>> "${gall}"
-		echo "$(tab 6)""<div class=\"overlay-button noswipe cursor-pointer\" onclick=\"toggOver(event)\"></div>"		>> "${gall}"
-		echo "$(tab 6)""<div class=\"overlay overlay-work noswipe overlay-hide\">"			>> "${gall}"
-		echo "$(tab 7)""<div class=\"gradient-box\">"															>> "${gall}"
-		echo "$(tab 8)""<div class=\"gradient-vertical\"></div>"											>> "${gall}"
-		echo "$(tab 7)""</div>"																								>> "${gall}"
-		echo "$(tab 7)""<div class=\"white-background\"></div>"										>> "${gall}"
-		echo "$(tab 7)""<div class=\"work-box\">"																>> "${gall}"
-		echo "$(tab 8)""<p class=\"p-margin-0\"><i>"${wtitle}"</i></p>"							>> "${gall}"
-		echo "$(tab 8)""<p class=\"p-margin\">"${wtech}"</p>"											>> "${gall}"
-		echo "$(tab 8)""<p class=\"p-margin\">"${wyear}"</p>"										>> "${gall}"
-		echo "$(tab 8)""<p class=\"p-margin\">"${wdim}"</p>"											>> "${gall}"
-		echo "$(tab 7)""</div>"																								>> "${gall}"
-		echo "$(tab 6)""</div>"																								>> "${gall}"
-		echo "$(tab 6)""<div class=\"swiper-zoom-container\" data-swiper-zoom=\"6\">"	>> "${gall}"
-		echo "$(tab 7)""<img src=\"https://jaszewski.art""${wsizes[0]}""\""							>> "${gall}"
-		echo "$(tab 8)""sizes=\"(min-aspect-ratio: "${war}") "${wvw}"vh, 100vw\""			>> "${gall}"
-		echo "$(tab 8)""srcset=\""																							>> "${gall}"
+		echo "$(tab 5)""<div id=\""${wid}"\" class=\"swiper-slide "${wbgcol}"\">"									>> "${gall}"
+		echo "$(tab 6)""<div class=\"overlay-button noswipe cursor-pointer\" onclick=\"toggOver(event)\"></div>"	>> "${gall}"
+		echo "$(tab 6)""<div class=\"overlay overlay-work noswipe overlay-hide\">"									>> "${gall}"
+		echo "$(tab 7)""<div class=\"gradient-box\">"																>> "${gall}"
+		echo "$(tab 8)""<div class=\"gradient-vertical\"></div>"													>> "${gall}"
+		echo "$(tab 7)""</div>"																						>> "${gall}"
+		echo "$(tab 7)""<div class=\"white-background\"></div>"														>> "${gall}"
+		echo "$(tab 7)""<div class=\"work-box\">"																	>> "${gall}"
+		echo "$(tab 8)""<p class=\"p-margin-0\"><i>"${wtitle}"</i></p>"												>> "${gall}"
+		echo "$(tab 8)""<p class=\"p-margin\">"${wtech}"</p>"														>> "${gall}"
+		echo "$(tab 8)""<p class=\"p-margin\">"${wyear}"</p>"														>> "${gall}"
+		echo "$(tab 8)""<p class=\"p-margin\">"${wdim}"</p>"														>> "${gall}"
+		echo "$(tab 7)""</div>"																						>> "${gall}"
+		echo "$(tab 6)""</div>"																						>> "${gall}"
+		echo "$(tab 6)""<div class=\"swiper-zoom-container\" data-swiper-zoom=\"6\">"								>> "${gall}"
+		echo "$(tab 7)""<img src=\"https://jaszewski.art""${wsizes[0]}""\""											>> "${gall}"
+		echo "$(tab 8)""sizes=\"(min-aspect-ratio: "${war}") "${wvw}"vh, 100vw\""									>> "${gall}"
+		echo "$(tab 8)""srcset=\""																					>> "${gall}"
 		for wsize in "${wsizes[@]}"; do
 			temp=${wsize#*_}
 			width=${temp%.*}
-			echo "$(tab 10)""https://jaszewski.art"${wsize}" "${width}"w," 							>> "${gall}"
+			echo "$(tab 10)""https://jaszewski.art"${wsize}" "${width}"w," 											>> "${gall}"
 		done
 		temp=${lastwsize#*_}
 		width=${temp%.*}
-		echo "$(tab 10)""https://jaszewski.art"${lastwsize}" "${width}"w\"" 						>> "${gall}"
-		echo "$(tab 8)""alt=\""${walt}"\" class=\"img-repro\" loading=\"lazy\">"					>> "${gall}"
-		echo "$(tab 6)""</div>"																								>> "${gall}"
-		echo "$(tab 5)""</div>"																								>> "${gall}"
-		echo																															>> "${gall}"
+		echo "$(tab 10)""https://jaszewski.art"${lastwsize}" "${width}"w\"" 										>> "${gall}"
+		echo "$(tab 8)""alt=\""${walt}"\" class=\"img-repro\" loading=\"lazy\">"									>> "${gall}"
+		echo "$(tab 6)""</div>"																						>> "${gall}"
+		echo "$(tab 5)""</div>"																						>> "${gall}"
+		echo																										>> "${gall}"
 	done
 
-	echo "$(tab 4)""</div>"																									>> "${gall}"
-	echo 																																>> "${gall}"
-	echo "$(tab 4)""<div class=\"swiper-button-prev glow-red\"></div>"							>> "${gall}"
-	echo "$(tab 4)""<div class=\"swiper-button-next glow-red\"></div>"							>> "${gall}"
-	echo "$(tab 4)""<div class=\"swiper-pagination\"></div>"											>> "${gall}"
-	echo 																																>> "${gall}"
-	echo "$(tab 3)""</div>"																									>> "${gall}"
-	echo "$(tab 2)""</div>"																									>> "${gall}"
-	echo 																																>> "${gall}"
+	echo "$(tab 4)""</div>"																							>> "${gall}"
+	echo 																											>> "${gall}"
+	echo "$(tab 4)""<div class=\"swiper-button-prev glow-red\"></div>"												>> "${gall}"
+	echo "$(tab 4)""<div class=\"swiper-button-next glow-red\"></div>"												>> "${gall}"
+	echo "$(tab 4)""<div class=\"swiper-pagination\"></div>"														>> "${gall}"
+	echo 																											>> "${gall}"
+	echo "$(tab 3)""</div>"																							>> "${gall}"
+	echo "$(tab 2)""</div>"																							>> "${gall}"
+	echo 																											>> "${gall}"
 
 done
 echo -e "\e[00;34mDONE\e[0m" "\e[00;36mHTML compilation\e[0m"
