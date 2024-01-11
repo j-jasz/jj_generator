@@ -137,6 +137,7 @@ overlastsize() {
 #====================================================		TXT PREP
 
 # add index nr in front of selected .txt filenames
+
 cd "${rootdir}"/text
 
 mapfile -d $'\0' locations < <(find ~+ -type d -print0)
@@ -223,7 +224,6 @@ for filename in ${txt}; do
 	# prep works
 	workdir="${rootdir}"/text/works/"${series}"
 	works="$(find "${workdir}" -maxdepth 1 -type f -name "*.txt" | sort -n)"
-	#~ echo "${works}"
 
 	mapfile -t -s 12 sizes < <(sed '$ d' "${filename}")
 	lastsize=$(tail -n1 "${filename}")
