@@ -191,16 +191,48 @@ for filename in ${txt}; do
 
 done
 
-#====================================================       HTML SERIES (HOME, BLOG & GALLERY)
+#====================================================       HTML BLOG
+
+cd "${rootdir}"/text/blog
+
+blog="${rootdir}"/text/blog.txt
+echo >> "${blog}"
+
+txt="$(find . -maxdepth 1 -type f -name "*.txt")"
+for filename in ${txt}; do
+
+    id=$(sed -n '1p' "${filename}")
+    alt=$(sed -n '2p' "${filename}")
+    # put all lines after 2 line  in an array but exclude last line
+    mapfile -t -s 4 sizes < <(sed '$ d' "${filename}")
+    # last line of sizes
+    lastsize=$(tail -n1 "${filename}")
+
+    # PRINT
+    echo "$(tab 7)""<div data-hash=\""${id}"\" class=\"swiper-slide no-select\">"                                   >> "${blog}"
+    echo "$(tab 8)""<img src=\"https://jaszewski.art""${sizes[0]}""\""                                              >> "${blog}"
+    echo "$(tab 9)""sizes=\"90vh\""                                                                                 >> "${blog}"
+    echo "$(tab 9)""srcset=\""                                                                                      >> "${blog}"
+    for size in "${sizes[@]}"; do
+        allsize
+        echo "$(tab 11)""https://jaszewski.art"${size}" "${width}"w,"                                               >> "${blog}"
+    done
+    lastsize
+    echo "$(tab 11)""https://jaszewski.art"${lastsize}" "${width}"w\""                                              >> "${blog}"
+    echo "$(tab 9)"alt="\"${alt}\" loading=\"lazy\">"                                                               >> "${blog}"
+    echo "$(tab 7)""</div>"                                                                                         >> "${blog}"
+    echo                                                                                                            >> "${blog}"
+
+done
+
+#====================================================       HTML SERIES (HOME & GALLERY)
 
 cd "${rootdir}"/text/series
 
 seho="${rootdir}"/text/series-home.txt
 gall="${rootdir}"/text/gallery.txt
-blog="${rootdir}"/blog/blog.txt
 echo >> "${seho}"
 echo >> "${gall}"
-echo >> "${blog}"
 
 # sort array
 txt="$(find . -maxdepth 1 -type f -name "*.txt" | sort -n)"
@@ -248,21 +280,6 @@ for filename in ${txt}; do
     echo "$(tab 6)""</a>"                                                                                           >> "${seho}"
     echo "$(tab 5)""</div>"                                                                                         >> "${seho}"
     echo                                                                                                            >> "${seho}"
-
-    # PRINT BLOG
-    echo "$(tab 7)""<div data-hash=\""${id}"\" class=\"swiper-slide no-select\">"                                   >> "${blog}"
-    echo "$(tab 8)""<img src=\"https://jaszewski.art""${sizes[0]}""\""                                              >> "${blog}"
-    echo "$(tab 9)""sizes=\"100vw\""                                                                                >> "${blog}"
-    echo "$(tab 9)""srcset=\""                                                                                      >> "${blog}"
-    for size in "${sizes[@]}"; do
-        allsize
-        echo "$(tab 11)""https://jaszewski.art"${size}" "${width}"w,"                                               >> "${blog}"
-    done
-    lastsize
-    echo "$(tab 11)""https://jaszewski.art"${lastsize}" "${width}"w\""                                              >> "${blog}"
-    echo "$(tab 9)"alt="\"${alt}\" loading=\"lazy\">"                                                               >> "${blog}"
-    echo "$(tab 7)""</div>"                                                                                         >> "${blog}"
-    echo                                                                                                            >> "${blog}"
 
     # PRINT SERIES GALLERY
     echo "$(tab 1)""<!--""$(spacer 40)""$titlecure""$(spacer 40)""-->"                                              >> "${gall}"
